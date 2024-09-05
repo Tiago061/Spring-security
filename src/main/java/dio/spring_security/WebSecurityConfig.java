@@ -36,7 +36,7 @@ public class WebSecurityConfig {
     }
     @Bean
     public UserDetailsService userDetailsService() {
-        // Criação dos usuários em memória
+
         var userDetailsService = new InMemoryUserDetailsManager();
 
         userDetailsService.createUser(
