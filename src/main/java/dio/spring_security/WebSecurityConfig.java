@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -23,12 +22,13 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/managers").hasRole("MANAGERS")
-                        .requestMatchers("/users").hasAnyRole("USERS", "MANAGERS")
-                        .anyRequest().authenticated()
-                )
+                .authorizeHttpRequests()
+                .requestMatchers("/").permitAll()
+                .requestMatchers(HttpMethod.POST,"/login").permitAll()
+                .requestMatchers("/managers").hasRole("MANAGERS")
+                .requestMatchers("/users").hasAnyRole("USERS", "MANAGERS")
+                .anyRequest().authenticated()
+                .and()
                 .formLogin();
 
 
