@@ -1,8 +1,11 @@
-package dio.spring_security;
+package dio.spring_security.config;
+import dio.spring_security.config.SecurityDataBaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +22,13 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
+
+    @Autowired
+    private SecurityDataBaseService securityService;
+    @Autowired
+    public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception{
+        auth.userDetailsService(securityService).passwordEncoder(NoOpPasswordEncoder.getInstance());
+    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -29,11 +39,13 @@ public class WebSecurityConfig {
                 .requestMatchers("/users").hasAnyRole("USERS", "MANAGERS")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin();
+                .httpBasic();
 
 
         return http.build();
     }
+
+    /*
     @Bean
     public UserDetailsService userDetailsService() {
 
@@ -53,4 +65,5 @@ public class WebSecurityConfig {
 
         return userDetailsService;
     }
+     */
 }
